@@ -1,10 +1,16 @@
 use actix_web::{web, App, HttpServer, Responder, HttpResponse};
 use mc_infos::routes::v1;
 use serde_json::json;
+use dotenv::dotenv;
+use std::env;
 
 #[actix_web::main]
 async fn main() {
-    let port = 3000;
+    dotenv().ok();
+    let port = env::var("PORT")
+        .unwrap_or(String::from("3000"))
+        .parse::<u16>()
+        .expect("Invalid port number");
 
     let server =     HttpServer::new(|| {
         App::new()
