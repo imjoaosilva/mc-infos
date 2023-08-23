@@ -1,22 +1,11 @@
 use actix_web::{web, App, HttpServer, Responder, HttpResponse};
-
-mod routes {
-    pub mod v1 {
-        pub mod user;
-    }
-}
-
-mod services {
-    pub mod user_service;
-}
-
-mod models {
-    pub mod user;
-}
-
 use serde_json::json;
 use dotenv::dotenv;
 use std::env;
+
+mod routes;
+mod services;
+mod models;
 
 #[actix_web::main]
 async fn main() {
@@ -28,7 +17,7 @@ async fn main() {
 
     let server =     HttpServer::new(|| {
         App::new()
-            .service(web::scope("/v1").configure(routes::v1::user::config))
+            .configure(routes::config)
             .default_service(
                 web::route().to(get_not_found)
             )

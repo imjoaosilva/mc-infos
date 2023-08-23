@@ -60,7 +60,8 @@ fn get_data(body: String) -> DecodedProfileData {
     data
 }
 
-pub async fn get_image_from_url(url: String) -> Option<Vec<u8>> {
+
+pub async fn get_image(url: String) -> Option<Vec<u8>> {
     let client = Client::new();
     let request = client.get(&url)
         .send()
