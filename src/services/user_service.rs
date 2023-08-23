@@ -7,38 +7,42 @@ pub async fn get_user_info(username: String) -> Option<User> {
     let url = format!("https://api.mojang.com/users/profiles/minecraft/{}", username);
 
     let client = Client::new();
-    let res = client.get(&url)
-    .send()
-    .await;
+    let request = client.get(&url)
+        .send()
+        .await;
 
-    match res {
-        Ok(res) => {
-            let body = res.text().await.unwrap();
+    match request {
+        Ok(response) => {
+            let body = response.text().await.unwrap();
+            if let Ok(player_data) = serde_json::from_str::<PlayerData>(&body) {
+                let url = format!("https://sessionserver.mojang.com/session/minecraft/profile/{}", player_data.id);
+                
+                let res = client.get(&url)
+                    .send()
+                    .await;
+                
+                let body = res.unwrap().text().await.unwrap();
+                let data = get_data(body);
 
-            let player_data: PlayerData = serde_json::from_str(&body).unwrap();
-            let url = format!("https://sessionserver.mojang.com/session/minecraft/profile/{}", player_data.id);
-            
-            let res = client.get(&url)
-                .send()
-                .await;
-            
-            let body = res.unwrap().text().await.unwrap();
-            let data = get_data(body);
+                let user = User {
+                    uuid: data.profile_id,
+                    username: data.profile_name,
+                    textures: UserTexture {
+                        cape: data.textures.cape.url,
+                        skin: data.textures.skin.url,
+                    },
+                    time: data.timestamp,
+                };
 
-            let user = User {
-                uuid: data.profile_id,
-                username: data.profile_name,
-                textures: UserTexture {
-                    cape: data.textures.cape.url,
-                    skin: data.textures.skin.url,
-                },
-                time: data.timestamp,
-            };
-
-            Some(user)
+                Some(user)
+            } else {
+                None
+            }
 
         },
-        Err(_) => None
+        Err(_) => {
+            None
+        }
     }
 
 }
@@ -51,7 +55,6 @@ fn get_data(body: String) -> DecodedProfileData {
     let decode = general_purpose::STANDARD.decode(code.as_bytes()).unwrap();
     
     let str = String::from_utf8(decode).unwrap();
-    println!("{}", str);
     let data: DecodedProfileData = serde_json::from_str(&str).unwrap();
 
     data
