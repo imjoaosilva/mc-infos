@@ -19,7 +19,7 @@ async fn main() {
                 web::route().to(get_not_found)
             )
     })
-    .bind(format!("127.0.0.1:{}", port))
+    .bind(format!("0.0.0.0:{}", port))
     .expect("🔒 Connection error...")
     .run();
 
