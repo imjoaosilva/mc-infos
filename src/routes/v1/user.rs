@@ -2,7 +2,6 @@ use actix_web::{web, HttpResponse, Responder};
 use serde_json::json;
 
 use crate::services::user_service;
-use crate::utils::get_image;
 
 pub fn config(cfg: &mut web::ServiceConfig) {
     cfg.service(
@@ -33,7 +32,7 @@ async fn get_cape(info: web::Path<String,>) -> impl Responder {
 
     match user {
         Some(user) =>{
-            let base64 = get_image::get_image_from_url(user.textures.cape).await;
+            let base64 = user_service::get_image_from_url(user.textures.cape).await;
             if let Some(bytes) = base64 {
 
                 return HttpResponse::Ok()

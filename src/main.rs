@@ -6,10 +6,6 @@ mod routes {
     }
 }
 
-mod utils {
-    pub mod get_image;
-}
-
 mod services {
     pub mod user_service;
 }
@@ -32,7 +28,7 @@ async fn main() {
 
     let server =     HttpServer::new(|| {
         App::new()
-            .service(web::scope("/v1/user").configure(routes::v1::user::config))
+            .service(web::scope("/v1").configure(routes::v1::user::config))
             .default_service(
                 web::route().to(get_not_found)
             )
