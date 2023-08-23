@@ -1,5 +1,23 @@
 use actix_web::{web, App, HttpServer, Responder, HttpResponse};
-use mc_infos::routes::v1;
+
+mod routes {
+    pub mod v1 {
+        pub mod user;
+    }
+}
+
+mod utils {
+    pub mod get_image;
+}
+
+mod services {
+    pub mod user_service;
+}
+
+mod models {
+    pub mod user;
+}
+
 use serde_json::json;
 use dotenv::dotenv;
 use std::env;
@@ -14,7 +32,7 @@ async fn main() {
 
     let server =     HttpServer::new(|| {
         App::new()
-            .service(web::scope("/v1/user").configure(v1::user::config))
+            .service(web::scope("/v1/user").configure(routes::v1::user::config))
             .default_service(
                 web::route().to(get_not_found)
             )
