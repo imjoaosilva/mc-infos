@@ -1,28 +1,54 @@
-use std::fmt;
-use serde::Serialize;
+use serde::{Serialize, Deserialize};#[derive(Serialize)]
 
-#[derive(Serialize)]
-pub struct Textures {
-    pub cape : String,
-    pub skin : String
-}
-
-impl fmt::Display for Textures {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "cape: {}, skin: {}", self.cape, self.skin)
-    }
-}
-
-#[derive(Serialize)]
 pub struct User {
-    pub uuid : String,
-    pub username : String,
-    pub textures : Textures,
-    pub time: String
+    pub uuid: String,
+    pub username: String,
+    pub textures: UserTexture,
+    pub time: i64,
 }
 
-impl fmt::Display for User {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "uuid: {}, username: {}, textures: {}, time: {}", self.uuid, self.username, self.textures, self.time)
-    }
+#[derive(Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct UserTexture {
+    pub cape: String,
+    pub skin: String,
+}
+
+#[derive(Serialize, Deserialize)]
+pub struct PlayerData {
+    pub id: String,
+}
+
+#[derive(Serialize, Deserialize)]
+pub struct ProfileData {
+    pub id: String,
+    pub name: String,
+    pub properties: Vec<Property>,
+}
+
+#[derive(Serialize, Deserialize)]
+pub struct Property {
+    pub name: String,
+    pub value: String,
+}
+
+#[derive(Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct DecodedProfileData {
+    pub timestamp: i64,
+    pub profile_id: String,
+    pub profile_name: String,
+    pub textures: Textures,
+}
+
+#[derive(Serialize, Deserialize)]
+#[serde(rename_all = "UPPERCASE")]
+pub struct Textures {
+    pub skin: Cape,
+    pub cape: Cape,
+}
+
+#[derive(Serialize, Deserialize)]
+pub struct Cape {
+    pub url: String,
 }
