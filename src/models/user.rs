@@ -10,7 +10,7 @@ pub struct User {
 #[derive(Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct UserTexture {
-    pub cape: String,
+    pub cape: Option<Cape>,
     pub skin: String,
 }
 
@@ -19,14 +19,14 @@ pub struct PlayerData {
     pub id: String,
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Debug)]
 pub struct ProfileData {
     pub id: String,
     pub name: String,
     pub properties: Vec<Property>,
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Debug)]
 pub struct Property {
     pub name: String,
     pub value: String,
@@ -45,7 +45,7 @@ pub struct DecodedProfileData {
 #[serde(rename_all = "UPPERCASE")]
 pub struct Textures {
     pub skin: Cape,
-    pub cape: Cape,
+    pub cape: Option<Cape>,
 }
 
 #[derive(Serialize, Deserialize)]

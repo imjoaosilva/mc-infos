@@ -22,13 +22,15 @@ pub async fn get_user_info(username: String) -> Option<User> {
                     .await;
                 
                 let body = res.unwrap().text().await.unwrap();
+
                 let data = get_data(body);
+                
 
                 let user = User {
                     uuid: data.profile_id,
                     username: data.profile_name,
                     textures: UserTexture {
-                        cape: data.textures.cape.url,
+                        cape: data.textures.cape,
                         skin: data.textures.skin.url,
                     },
                     time: data.timestamp,
