@@ -1,12 +1,17 @@
 use actix_web::{web, HttpResponse, Responder};
-use crate::services::user_service;
+use crate::services::{user_service, preview_service};
 use serde_json::json;
 
 pub async fn get_cape(info: web::Path<String>) -> impl Responder {
     if let Some(user) = user_service::get_user_info(info.to_string()).await {
         let image = user_service::get_image(user.textures.cape).await;
-        if let Some(bytes) = image {
 
+        if let Some(bytes) = image {
+            let bytes = preview_service::cape_manipulation(bytes);
+            
+            return HttpResponse::Ok()
+                .content_type("image/png")
+                .body(bytes);
         }
 
         HttpResponse::NotFound().body(json!({

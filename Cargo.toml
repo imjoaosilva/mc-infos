@@ -13,3 +13,4 @@ serde_json = "1.0.105"
 base64 = "0.21.2"
 serde = { version = "1.0.104", features = ["derive"] }
 dotenv = "0.15.0"
+image = "0.24.7"
